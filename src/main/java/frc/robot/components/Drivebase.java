@@ -1,6 +1,7 @@
 package frc.robot.components;
 
 import com.ctre.phoenix.ErrorCode;
+import com.ctre.phoenix.motion.BufferedTrajectoryPointStream;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -118,6 +119,18 @@ public class Drivebase extends Component<Robot> {
         swappedDrive.setState(false);
 
         setRamping(Constants.DRIVEBASE_DEFAULT_RAMPING);
+
+        left.setSensorPhase(true);
+        right.setSensorPhase(true);
+    }
+
+    public void startMotionProfile(BufferedTrajectoryPointStream _streamLeft, BufferedTrajectoryPointStream _streamRight, int _minBufferedPts, ControlMode _motionProfControlMode) {
+        left.startMotionProfile(_streamLeft, _minBufferedPts, _motionProfControlMode);
+        right.startMotionProfile(_streamRight, _minBufferedPts, _motionProfControlMode);
+    }
+
+    public boolean isMotionProfileFinished() {
+        return left.isMotionProfileFinished() && right.isMotionProfileFinished();
     }
 
     private void setPID(final int slot, final MotionMagic gain) {

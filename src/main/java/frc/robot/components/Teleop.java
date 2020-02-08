@@ -96,6 +96,8 @@ public class Teleop extends Component<Robot> {
 
             robot.getFlywheel().getFlywheelToggle().setState(driver.getRawButton(Xbox.Button.B));
 
+            robot.getMotionProfile().getToggle().setState(driver.getRawButton(Xbox.Button.BUMPER_L));
+
             robot.getElevator().setSpeed(driver.getRawAxis(Xbox.Axis.TRIGGER_RIGHT) - driver.getRawAxis(Xbox.Axis.TRIGGER_LEFT));
 
             robot.getIntake().getReverse().isToggled(driver.getRawButton(Xbox.Button.Y));

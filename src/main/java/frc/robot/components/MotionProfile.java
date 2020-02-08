@@ -6,11 +6,13 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.util.PathArrays;
+import frc.team5431.titan.core.misc.Toggle;
 import frc.team5431.titan.core.robot.Component;
 
 public class MotionProfile extends Component<Robot> {
 
-    int _state = 1;
+    private int _state = 1;
+    private Toggle mpToggle;
 
     /** new class type in 2019 for holding MP buffer. */
     BufferedTrajectoryPointStream _bufferedStreamLeft = new BufferedTrajectoryPointStream();
@@ -19,11 +21,17 @@ public class MotionProfile extends Component<Robot> {
     @Override
     public void init(final Robot robot) {
         initBuffer(PathArrays.path_full_vLeft(), PathArrays.path_full_vRight(), PathArrays.numPoints);
+        mpToggle = new Toggle();
+        mpToggle.setState(false);
     }
 
     @Override
     public void periodic(final Robot robot) {
         switch (_state) {
+            case 0:
+                if (mpToggle.getState()) {
+                    _state = 1;
+                }
             case 1:
             /* wait for 10 points to buffer in firmware, then transition to MP */
                 robot.getDrivebase().startMotionProfile(_bufferedStreamLeft, _bufferedStreamRight, 10, ControlMode.MotionProfile);
@@ -105,5 +113,12 @@ public class MotionProfile extends Component<Robot> {
             _bufferedStreamLeft.Write(pointLeft);
             _bufferedStreamRight.Write(pointRight);
         }
+    }
+
+    /**
+     * @return the mpToggle
+     */
+    public Toggle getToggle() {
+        return mpToggle;
     }
 }

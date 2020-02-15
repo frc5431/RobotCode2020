@@ -3,6 +3,7 @@ package frc.robot.components;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Robot.Mode;
+import frc.robot.util.ComponentControlMode;
 import frc.team5431.titan.core.joysticks.LogitechExtreme3D;
 import frc.team5431.titan.core.joysticks.Xbox;
 import frc.team5431.titan.core.misc.Logger;
@@ -72,7 +73,7 @@ public class Teleop extends Component<Robot> {
                         turn *= -1;
                     }
 
-                    drivebase.drivePercentageArcade(power, turn);
+                    drivebase.drivePercentageArcade(power, turn, ComponentControlMode.MANUAL);
                     break;
                 case TANK:
                     left = driver.getRawAxis(Xbox.Axis.LEFT_Y) * -1;
@@ -85,7 +86,7 @@ public class Teleop extends Component<Robot> {
                         right = -oldLeft;
                     }
 
-                    drivebase.drivePercentageTank(left, right);
+                    drivebase.drivePercentageTank(left, right, ComponentControlMode.MANUAL);
                     break;
                 default:
                     break;

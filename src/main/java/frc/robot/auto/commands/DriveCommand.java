@@ -48,7 +48,7 @@ public class DriveCommand extends Command<Robot> {
             return CommandResult.CLEAR_QUEUE;
         }
 
-        drivebase.drivePercentageTank(left, right);
+        drivebase.drivePercentageTank(left, right, ComponentControlMode.AUTO);
 
         if (System.currentTimeMillis() > startTime + time) {
             return CommandResult.COMPLETE;

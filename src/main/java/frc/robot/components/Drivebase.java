@@ -190,12 +190,15 @@ public class Drivebase extends Component<Robot> implements DrivebaseAnalyzer {
         right.selectProfileSlot(slot, 0);
     }
 
-    public void drivePercentageTank(double driveLeft, double driveRight) {
+    public void drivePercentageTank(double driveLeft, double driveRight, ComponentControlMode mode) {
         left.set(ControlMode.PercentOutput, driveLeft);
         right.set(ControlMode.PercentOutput, driveRight);
+
+        if (Math.abs(driveLeft) > 0 || Math.abs(driveRight) > 0)
+            setControlMode(mode);
     }
 
-    public void drivePercentageArcade(double power, double turn) {
+    public void drivePercentageArcade(double power, double turn, ComponentControlMode mode) {
         /*
          * Arbitrary based turning. Theoretically better as it is controlled by the
          * speed controller.
@@ -209,6 +212,9 @@ public class Drivebase extends Component<Robot> implements DrivebaseAnalyzer {
         right.set(ControlMode.PercentOutput, power, DemandType.ArbitraryFeedForward, +turn * 0.35);
 
         Logger.l("Power: %f, Turn: %f", power, turn);
+
+        if (Math.abs(power) > 0 || Math.abs(turn) > 0)
+            setControlMode(mode);
     }
 
     public void driveMotionMagic(double distance, double angle) {

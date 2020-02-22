@@ -48,8 +48,9 @@ public class Robot extends TitanRobot<Robot> {
     auton = new Auton();
     hopper = new Hopper();
 
+
     // Add Components to components Array
-    components = List.of(dashboard, drivebase, teleop, intake, flywheel, balancer, feeder, vision, auton, hopper);
+    components = List.of(dashboard, drivebase, teleop, intake, flywheel, feeder, balancer, vision, auton, hopper);
   }
 
   @Override

@@ -60,7 +60,7 @@ public final class Constants {
 
     public static final boolean SHOOTER_FLYWHEEL_REVERSE = true;
 
-    public static final NeutralMode SHOOTER_FLYWHEEL_NEUTRALMODE = NeutralMode.Coast;
+    public static final NeutralMode SHOOTER_FLYWHEEL_NEUTRALMODE = NeutralMode.Brake;
     public static final double SHOOTER_FLYWHEEL_DEFAULT_SPEED = 0.75;
     public static final double SHOOTER_FLYWHEEL_RAMPING_SPEED = 0.500;
 
@@ -70,6 +70,8 @@ public final class Constants {
     public static final NeutralMode SHOOTER_FEEDER_NEUTRALMODE = NeutralMode.Brake;
     public static final double SHOOTER_FEEDER_DEFAULT_SPEED = 0.3;
     public static final double SHOOTER_FEEDER_SHOOT_SPEED = 1.0;
+    public static final long SHOOTER_FEEDER_UP_DELAY = 1000;
+    public static final long SHOOTER_FEEDER_DOWN_DELAY = 1500;
 
     // Intake Related
     public static final int INTAKE_ID = 5;

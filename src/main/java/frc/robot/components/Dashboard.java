@@ -48,6 +48,7 @@ public class Dashboard extends Component<Robot> {
         putNumber("Shooter Sensor Range", 0);
         putNumber("Shooter Sensor Timestamp", 0);
         putNumber("Feed Encoder Position", 0);
+        putNumber("Ball Count", 0);
     }
 
     @Override
@@ -72,6 +73,7 @@ public class Dashboard extends Component<Robot> {
         putNumber("Limelight X", robot.getVision().getFrontLimelight().getX());
         putNumber("Limelight Y", robot.getVision().getFrontLimelight().getTable().getEntry("ty").getDouble(0.0));
         putNumber("Feed Encoder Position", robot.getFeeder().getFeedEncoderCount());
+        putNumber("Ball Count", robot.getFeeder().getBallCount());
 
         if(robot.getFeeder().getFeedSensor().isRangeValid()) {
             putNumber("Feeder Sensor Range", robot.getFeeder().getFeedSensor().getRange());

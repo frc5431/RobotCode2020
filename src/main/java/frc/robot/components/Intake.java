@@ -42,21 +42,11 @@ public class Intake extends Component<Robot> {
 
     @Override
     public void periodic(Robot robot) {
-        // if (intakeToggle.getState()) {
-            // if (reverse.getState()) {
-            //     intakeMotor.set(-1 * Constants.INTAKE_SPEED);
-            // } else {
-                intakeMotor.set(intakeSpeed);
-            // }
-        // } else {
-        //     intakeMotor.set(0);
-        // }
-
-        // if (pivotToggle.getState()) {
-        //     pivotMotor.set(pivotSpeed);
-        // } else {
-        //     pivotMotor.set(0);
-        // }
+        if (intakeToggle.getState()) {
+            intakeMotor.set(intakeSpeed);
+        } else {
+            intakeMotor.set(0);
+        }
     }
 
     @Override

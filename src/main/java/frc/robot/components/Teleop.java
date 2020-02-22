@@ -37,7 +37,7 @@ public class Teleop extends Component<Robot> {
     @Override
     public void periodic(Robot robot) {
         //Only run if in teleop
-        if (robot.getMode() != Mode.TELEOP)
+        if (robot.getMode() != Mode.TELEOP && robot.getMode() != Mode.TEST)
             return;
 
         // Run the respective controller code
@@ -102,12 +102,8 @@ public class Teleop extends Component<Robot> {
             
             //the Y button toggles the input and feeder into reverse input mode, (up is down, left is right, etc.)
             //robot.getIntake().getIntakeToggle().isToggled(driver.getRawButton(Xbox.Button.Y));
-            Logger.l("Xbox Y: %b", driver.getRawButton(Xbox.Button.Y));
+            // Logger.l("Xbox Y: %b", driver.getRawButton(Xbox.Button.Y));
             // robot.getFeeder().getReverse().isToggled(driver.getRawButton(Xbox.Button.Y));
-
-            //Sets the vision toggles to the bumpers
-            robot.getVision().getTargetToggle().isToggled(operator.getRawButton(LogitechExtreme3D.Button.ELEVEN));
-            // robot.getVision().getVisionLightToggle().isToggled(driver.getRawButton(Xbox.Button.BUMPER_L));
 
         } else {
             //warn driver if controller is not connected
@@ -120,42 +116,35 @@ public class Teleop extends Component<Robot> {
     private void operator(Robot robot) { 
         final String operatorName = operator.getName().toLowerCase();
 
-        //extra check for correct operator and co nstants setup
+        //extra check for correct operator and constants setup
         if (operatorName.contains(Constants.OPERATOR_LOGITECH_NAME.toLowerCase())) {
 
-            //get the X axis and the Slider
-           // double elevatorSpeed = operator.getRawAxis(LogitechExtreme3D.Axis.Y);
-            //double balancerSpeed = operator.getRawAxis(LogitechExtreme3D.Axis.X);
-
-            //set elevator and balancer speeds
-            //robot.getElevator().setSpeed(elevatorSpeed);
-            //robot.getBalancer().setSpeed(balancerSpeed);
+            // Elevator and balancer controls
+            // robot.getElevator().setSpeed(operator.getRawAxis(LogitechExtreme3D.Axis.Y));
+            // robot.getBalancer().setSpeed(operator.getRawAxis(LogitechExtreme3D.Axis.X));
             
-            //set flywheel run when joystick trigger
+            // Flywheel controls
             robot.getFlywheel().getFlywheelToggle().setState(operator.getRawButton(LogitechExtreme3D.Button.TRIGGER));
             
+            // Intake controls
             robot.getIntake().setPivotSpeed((operator.getRawButton(8) ? 0.2 : 0) - (operator.getRawButton(7) ? 0.1 : 0));
 
+            robot.getIntake().getIntakeToggle().setState(operator.getRawButton(LogitechExtreme3D.Button.TEN));
+
+            // robot.getIntake().getReverse().setState(operator.getRawButton());
+
+            // Feeder/Indexer controls
             robot.getFeeder().setFeedSpeed((operator.getPOV() == 0 ? 1.0 : 0) - (operator.getPOV() == 180 ? 1.0 : 0));
 
+            // Hopper controls
             robot.getHopper().getHopperToggle().setState(operator.getRawButton(LogitechExtreme3D.Button.THREE));
 
             robot.getHopper().getReverse().setState(operator.getRawButton(LogitechExtreme3D.Button.FIVE));
 
-            if (operator.getRawButton(LogitechExtreme3D.Button.TEN))
-            {
-                robot.getIntake().setIntakeSpeed(Constants.INTAKE_DEFAULT_SPEED);
-            } else {
-                robot.getIntake().setIntakeSpeed(0);
-            }
-            // if (driver.getRawButton(Xbox.Button.X))
-            // {
-            //     robot.getIntake().setIntakeSpeed(Constants.INTAKE_DEFAULT_SPEED);
-            // }
+            // Vision controls
+            robot.getVision().getTargetToggle().isToggled(operator.getRawButton(LogitechExtreme3D.Button.ELEVEN));
 
-           
-
-            // robot.getIntake().getReverse().setState(operator.getRawButton(LogitechExtreme3D.Button.TEN));
+            // robot.getVision().getVisionLightToggle().isToggled();
 
         } else {
             //warn operator if controller is not connected
@@ -165,8 +154,11 @@ public class Teleop extends Component<Robot> {
         }
     }
 
-
 	public Xbox getDriver() {
 		return driver;
-	}
+    }
+    
+    public LogitechExtreme3D getOperator() {
+        return operator;
+    }
 }

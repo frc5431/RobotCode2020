@@ -6,15 +6,12 @@ import frc.robot.Robot.Mode;
 import frc.team5431.titan.core.joysticks.LogitechExtreme3D;
 import frc.team5431.titan.core.joysticks.Xbox;
 import frc.team5431.titan.core.misc.Logger;
-import frc.team5431.titan.core.misc.Toggle;
 import frc.team5431.titan.core.robot.Component;
 
 public class Teleop extends Component<Robot> {
 
     private Xbox driver;
     private LogitechExtreme3D operator;
-
-    private Toggle pivot = new Toggle();
 
     private boolean warnDriver = false, warnOperator = false;
 
@@ -26,8 +23,6 @@ public class Teleop extends Component<Robot> {
         //Init operator controller
         operator = new LogitechExtreme3D(Constants.OPERATOR_LOGITECH_ID);
         operator.setDeadzone(Constants.OPERATOR_LOGITECH_DEADZONE);
-
-        pivot.setState(false);
     }
 
     @Override
@@ -89,7 +84,7 @@ public class Teleop extends Component<Robot> {
                     break;
             }
 
-            //Set intake feeder & flywheel toggles to respective buttons (X, A, B)
+            //Set flywheel toggle to respective button (B)
             //off until pressed, on until pressed again
            
             robot.getFlywheel().getFlywheelToggle().isToggled(driver.getRawButton(Xbox.Button.B));
@@ -128,9 +123,7 @@ public class Teleop extends Component<Robot> {
             
             // Intake controls
             robot.getIntake().setPivotSpeed((operator.getRawButton(8) ? 0.2 : 0) - (operator.getRawButton(7) ? 0.1 : 0));
-
             robot.getIntake().getIntakeToggle().setState(operator.getRawButton(LogitechExtreme3D.Button.TEN));
-
             // robot.getIntake().getReverse().setState(operator.getRawButton());
 
             // Feeder/Indexer controls
@@ -138,12 +131,10 @@ public class Teleop extends Component<Robot> {
 
             // Hopper controls
             robot.getHopper().getHopperToggle().setState(operator.getRawButton(LogitechExtreme3D.Button.THREE));
-
             robot.getHopper().getReverse().setState(operator.getRawButton(LogitechExtreme3D.Button.FIVE));
 
             // Vision controls
             robot.getVision().getTargetToggle().isToggled(operator.getRawButton(LogitechExtreme3D.Button.ELEVEN));
-
             // robot.getVision().getVisionLightToggle().isToggled();
 
         } else {

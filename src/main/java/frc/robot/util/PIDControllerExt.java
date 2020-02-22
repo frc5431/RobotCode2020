@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 
 /**
  * PID Controller Extension
+ * @author Colin Wong
  */
 public class PIDControllerExt extends PIDController {
 	/**

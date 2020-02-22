@@ -87,7 +87,7 @@ public class Teleop extends Component<Robot> {
             //Set flywheel toggle to respective button (B)
             //off until pressed, on until pressed again
            
-            robot.getFlywheel().getFlywheelToggle().isToggled(driver.getRawButton(Xbox.Button.B));
+            // robot.getFlywheel().getFlywheelToggle().isToggled(driver.getRawButton(Xbox.Button.B));
             
             //set elevator speed to right trigger for up, left trigger for down
             //If right or left is zero it will be (Right - 0 = positive) or (0 - Left = negative)
@@ -127,7 +127,7 @@ public class Teleop extends Component<Robot> {
             // robot.getIntake().getReverse().setState(operator.getRawButton());
 
             // Feeder/Indexer controls
-            robot.getFeeder().setFeedSpeed((operator.getPOV() == 0 ? 1.0 : 0) - (operator.getPOV() == 180 ? 1.0 : 0));
+            robot.getFeeder().setFeedSpeed((operator.getPOV() == 0 ? Constants.SHOOTER_FEEDER_DEFAULT_SPEED : 0) - (operator.getPOV() == 180 ? Constants.SHOOTER_FEEDER_DEFAULT_SPEED : 0));
 
             // Hopper controls
             robot.getHopper().getHopperToggle().setState(operator.getRawButton(LogitechExtreme3D.Button.THREE));

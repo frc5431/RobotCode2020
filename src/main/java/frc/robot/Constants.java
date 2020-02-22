@@ -68,7 +68,8 @@ public final class Constants {
     public static final int SHOOTER_FEEDER_ID = 9;
     public static final boolean SHOOTER_FEEDER_REVERSE = true;
     public static final NeutralMode SHOOTER_FEEDER_NEUTRALMODE = NeutralMode.Brake;
-    public static final double SHOOTER_FEEDER_DEFAULT_SPEED = 1.0;
+    public static final double SHOOTER_FEEDER_DEFAULT_SPEED = 0.3;
+    public static final double SHOOTER_FEEDER_SHOOT_SPEED = 1.0;
 
     // Intake Related
     public static final int INTAKE_ID = 5;
@@ -148,9 +149,14 @@ public final class Constants {
     // Limelight PID
     public static final Double[] VISION_TURN_PID = {0.05, 0.0, 0.0}; // TODO: find good pid
     public static final Double[] VISION_POS_PID = {0.05, 0.0, 0.0}; // TODO: find good pid
-    
+
     // ================================================================================
     // Teleop Keybinds
     // ================================================================================
 
+    // ================================================================================
+    // Sensors
+    // ================================================================================
+    public static final double SHOOTER_SENSOR_DEFAULT = 5;
+    public static final double FEEDER_SENSOR_DEFAULT = 6;
 }

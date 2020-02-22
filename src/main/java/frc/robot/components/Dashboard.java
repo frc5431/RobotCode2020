@@ -43,6 +43,11 @@ public class Dashboard extends Component<Robot> {
         putNumber("Drivebase Ramping", Constants.DRIVEBASE_DEFAULT_RAMPING);
         putNumber("Hopper Speed", Constants.HOPPER_DEFAULT_SPEED);
         putNumber("Intake Speed", Constants.INTAKE_DEFAULT_SPEED);
+        putNumber("Feeder Sensor Range", 0);
+        putNumber("Feeder Sensor Timestamp", 0);
+        putNumber("Shooter Sensor Range", 0);
+        putNumber("Shooter Sensor Timestamp", 0);
+        putNumber("Feed Encoder Position", 0);
     }
 
     @Override
@@ -66,6 +71,17 @@ public class Dashboard extends Component<Robot> {
         putNumber("Shooter Guessed Speed", robot.getFlywheel().getFlywheelSpeed());
         putNumber("Limelight X", robot.getVision().getFrontLimelight().getX());
         putNumber("Limelight Y", robot.getVision().getFrontLimelight().getTable().getEntry("ty").getDouble(0.0));
+        putNumber("Feed Encoder Position", robot.getFeeder().getFeedEncoderCount());
+
+        if(robot.getFeeder().getFeedSensor().isRangeValid()) {
+            putNumber("Feeder Sensor Range", robot.getFeeder().getFeedSensor().getRange());
+            putNumber("Feeder Sensor Timestamp", robot.getFeeder().getFeedSensor().getTimestamp());
+        }
+
+        if(robot.getFeeder().getShootSensor().isRangeValid()) {
+            putNumber("Shooter Sensor Range", robot.getFeeder().getShootSensor().getRange());
+            putNumber("Shooter Sensor Timestamp", robot.getFeeder().getShootSensor().getTimestamp());
+        }
     }
 
     @Override

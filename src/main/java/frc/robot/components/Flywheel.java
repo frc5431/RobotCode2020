@@ -52,9 +52,9 @@ public class Flywheel extends Component<Robot> {
     public void periodic(Robot robot) {
         if(controlMode == ComponentControlMode.MANUAL) {
             if (flywheelToggle.getState()) {
-                flywheel.set(ControlMode.PercentOutput, shooterSpeed);
+                flywheel.set(ControlMode.Velocity, 7000);
             } else {
-                flywheel.set(ControlMode.PercentOutput, 0);
+                flywheel.set(ControlMode.Velocity, 0);
             }
         }
 

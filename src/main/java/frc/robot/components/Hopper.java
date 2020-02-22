@@ -22,12 +22,11 @@ public class Hopper extends Component<Robot> {
         hopperLeft = new WPI_TalonSRX(Constants.HOPPER_LEFT_ID);
         hopperRight = new WPI_TalonSRX(Constants.HOPPER_RIGHT_ID);
 
-        hopperRight.follow(hopperLeft);
-
         hopperLeft.setInverted(Constants.HOPPER_REVERSE);
-        hopperRight.setInverted(InvertType.OpposeMaster);
+        hopperRight.setInverted(!Constants.HOPPER_REVERSE);
 
         hopperLeft.setNeutralMode(Constants.HOPPER_NEUTRALMODE);
+        hopperRight.setNeutralMode(Constants.HOPPER_NEUTRALMODE);
 
         hopperToggle = new Toggle();
         hopperToggle.setState(false);
@@ -43,12 +42,16 @@ public class Hopper extends Component<Robot> {
     @Override
     public void periodic(final Robot robot) {
         if (hopperToggle.getState()) {
-            if (!reverseToggle.getState())
-                hopperLeft.set(hopperSpeed);
-            else
-                hopperLeft.set(-hopperSpeed);
+            if (!reverseToggle.getState()) {
+                hopperLeft.set(hopperSpeed+0.1);
+                hopperRight.set(hopperSpeed-0.1);
+            } else {
+                hopperLeft.set(-hopperSpeed+0.1);
+                hopperRight.set(-hopperSpeed-0.1);
+            }
         } else {
             hopperLeft.set(0);
+            hopperRight.set(0);
         }
     }
 

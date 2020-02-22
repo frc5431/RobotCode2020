@@ -143,7 +143,7 @@ public final class Constants {
 	public static final double DRIVEBASE_ANGLE_TOLERANCE = 5; //TODO: find good angle
 
     // Limelight constants
-    public static final double LIMELIGHT_ERROR_RATE = 0.0005; //TODO: find good error rate
+    public static final double LIMELIGHT_TOLERANCE = 0.0005; //TODO: find good error rate
 
     // Limelight PID
     public static final Double[] VISION_TURN_PID = {0.05, 0.0, 0.0}; // TODO: find good pid

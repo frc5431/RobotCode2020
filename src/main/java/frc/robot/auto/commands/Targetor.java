@@ -38,32 +38,34 @@ public class Targetor extends Command<Robot> {
 
     @Override
     public CommandResult update(Robot robot) {
-        final Drivebase drivebase = robot.getDrivebase();
+        return robot.getVision().target(robot, target) ? CommandResult.COMPLETE : CommandResult.IN_PROGRESS;
 
-        final double x = front.getX();
-        final double y = front.getY();
+        // final Drivebase drivebase = robot.getDrivebase();
 
-        final boolean xInRange = Calc.approxEquals(x, 0, Constants.LIMELIGHT_ERROR_RATE);
-        final boolean yInRange = Calc.approxEquals(y, 0, Constants.LIMELIGHT_ERROR_RATE);
+        // final double x = front.getX();
+        // final double y = front.getY();
 
-        // If x and y are bad, then fix
-        if ((!xInRange) && (!yInRange)) {
-            drivebase.drivePercentageArcade(y, x); // TODO: Test the error, most likely needs to multiplied.
-            return CommandResult.IN_PROGRESS;
-        }
-        // if only x is bad then fix x
-        else if (!xInRange && yInRange) {
-            drivebase.drivePercentageArcade(0, x); // TODO: Test the error, most likely needs to multiplied.
-            return CommandResult.IN_PROGRESS;
-        }
-        // if only y is bad then fix y
-        else if (xInRange && !yInRange) {
-            drivebase.drivePercentageArcade(y, 0); // TODO: Test the error, most likely needs to multiplied.
-            return CommandResult.IN_PROGRESS;
-        }
-        else {
-            return CommandResult.COMPLETE;
-        }
+        // final boolean xInRange = Calc.approxEquals(x, 0, Constants.LIMELIGHT_TOLERANCE);
+        // final boolean yInRange = Calc.approxEquals(y, 0, Constants.LIMELIGHT_TOLERANCE);
+
+        // // If x and y are bad, then fix
+        // if ((!xInRange) && (!yInRange)) {
+        //     drivebase.drivePercentageArcade(y, x); // TODO: Test the error, most likely needs to multiplied.
+        //     return CommandResult.IN_PROGRESS;
+        // }
+        // // if only x is bad then fix x
+        // else if (!xInRange && yInRange) {
+        //     drivebase.drivePercentageArcade(0, x); // TODO: Test the error, most likely needs to multiplied.
+        //     return CommandResult.IN_PROGRESS;
+        // }
+        // // if only y is bad then fix y
+        // else if (xInRange && !yInRange) {
+        //     drivebase.drivePercentageArcade(y, 0); // TODO: Test the error, most likely needs to multiplied.
+        //     return CommandResult.IN_PROGRESS;
+        // }
+        // else {
+        //     return CommandResult.COMPLETE;
+        // }
     }
 
     @Override

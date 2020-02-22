@@ -36,8 +36,8 @@ public class Vision extends Component<Robot> {
         turnController.setSetpoint(0);
         positionController.setSetpoint(0);
 
-        turnController.setTolerance(Constants.LIMELIGHT_ERROR_RATE);
-        positionController.setTolerance(Constants.LIMELIGHT_ERROR_RATE);
+        turnController.setTolerance(Constants.LIMELIGHT_TOLERANCE);
+        positionController.setTolerance(Constants.LIMELIGHT_TOLERANCE);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class Vision extends Component<Robot> {
         return targetToggle;
     }
 
-    private boolean target(Robot robot, TargetType type) {
+    public boolean target(Robot robot, TargetType type) {
         if (isOverridden(robot)) {
             front.setLEDState(LEDState.OFF);
             return true;

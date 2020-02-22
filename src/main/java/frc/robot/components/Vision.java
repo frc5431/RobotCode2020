@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.auto.vision.TargetType;
+import frc.robot.util.PIDControllerExt;
 import frc.team5431.titan.core.joysticks.Xbox;
 import frc.team5431.titan.core.misc.Calc;
 import frc.team5431.titan.core.misc.Toggle;
@@ -27,10 +28,16 @@ public class Vision extends Component<Robot> {
 
     public Vision() {
         front = new Limelight(Constants.VISION_FRONT_LIMELIGHT);
-
-        turnController = new PIDController(0.05, 0, 0);
-        positionController = new PIDController(0.05, 0, 0);
         // front.setLEDState(LEDState.ON);
+
+        turnController = new PIDControllerExt(Constants.VISION_TURN_PID);
+        positionController = new PIDControllerExt(Constants.VISION_POS_PID);
+        
+        turnController.setSetpoint(0);
+        positionController.setSetpoint(0);
+
+        turnController.setTolerance(Constants.LIMELIGHT_ERROR_RATE);
+        positionController.setTolerance(Constants.LIMELIGHT_ERROR_RATE);
     }
 
     @Override
@@ -99,8 +106,8 @@ public class Vision extends Component<Robot> {
         // steeringAdjust = kP * headingError + MIN_COMMAND;
         // }
 
-        final boolean xInRange = Calc.approxEquals(xError, 0, Constants.LIMELIGHT_ERROR_RATE);
-        final boolean yInRange = Calc.approxEquals(yError, 0, Constants.LIMELIGHT_ERROR_RATE);
+        final boolean xInRange = turnController.atSetpoint();
+        final boolean yInRange = positionController.atSetpoint();
 
         if (!xInRange && !yInRange) {
             drivebase.drivePercentageArcade(yError, xError);
@@ -115,17 +122,6 @@ public class Vision extends Component<Robot> {
             drivebase.drivePercentageArcade(0, 0);
             return true;
         }
-
-        /*
-         * // If x and y are bad, then fix if ((!xInRange) && (!yInRange)) {
-         * drivebase.drivePercentageArcade(y, x); // TODO: Test the error, most likely
-         * needs to multiplied. return false; } //if only x is bad then fix x if
-         * (!xInRange && yInRange) { drivebase.drivePercentageArcade(0, x); // TODO:
-         * Test the error, most likely needs to multiplied. return false; } // if only y
-         * is bad then fix y else if (xInRange && !yInRange) {
-         * drivebase.drivePercentageArcade(y, 0); // TODO: Test the error, most likely
-         * needs to multiplied. return false; } else { return true; }
-         */
     }
 
     /**

@@ -135,10 +135,22 @@ public final class Constants {
     public static final int DRIVEBASE_MOTIONMAGIC_TURN_REMOTE = REMOTE_1;
 
 
-    // AUTON
+    // ================================================================================
+    // Auton Values
+    // ================================================================================
 
     public static final int ELEVATOR_POSITION_TOLERANCE = 300;
 	public static final double DRIVEBASE_ANGLE_TOLERANCE = 5; //TODO: find good angle
 
-	public static final double LIMELIGHT_ERROR_RATE = 0.0005; //TODO: find good error rate
+    // Limelight constants
+    public static final double LIMELIGHT_ERROR_RATE = 0.0005; //TODO: find good error rate
+
+    // Limelight PID
+    public static final Double[] VISION_TURN_PID = {0.05, 0.0, 0.0}; // TODO: find good pid
+    public static final Double[] VISION_POS_PID = {0.05, 0.0, 0.0}; // TODO: find good pid
+    
+    // ================================================================================
+    // Teleop Keybinds
+    // ================================================================================
+
 }

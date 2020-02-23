@@ -19,14 +19,20 @@ public class Feeder extends Component<Robot> {
     Rev2mDistanceSensor feedSensor;
     Rev2mDistanceSensor shootSensor;
 
-    Toggle feedToggle, ballToggle;
+    Toggle feedToggle;
 
-    double shooterSpeed = 0.50;
     double feedSpeed;
     int stopCount;
-    boolean ballSeen;
+    boolean ballSeen, shootSeen;
 
+    /**
+     * Ball stop time = time for when the feeder should stop moving after it sees a
+     * ball Up stop time = time for when the feeder should stop moving three balls
+     * up Final stop time = time for when the feeder should
+     */
     long finalStopTime, upStopTime, ballStopTime;
+
+    int _state;
 
     int ballCount = 0;
     boolean shooting = false;
@@ -34,7 +40,7 @@ public class Feeder extends Component<Robot> {
     private ComponentControlMode controlMode = ComponentControlMode.MANUAL;
 
     public Feeder() {
-    
+
         feed = new WPI_TalonFX(Constants.SHOOTER_FEEDER_ID);
 
         feed.setInverted(Constants.SHOOTER_FEEDER_REVERSE);
@@ -42,9 +48,6 @@ public class Feeder extends Component<Robot> {
 
         feedToggle = new Toggle();
         feedToggle.setState(false);
-
-        ballToggle = new Toggle();
-        ballToggle.setState(false);
 
         // reverse = new Toggle();
         // reverse.setState(false);
@@ -57,61 +60,55 @@ public class Feeder extends Component<Robot> {
 
         feedSensor = new Rev2mDistanceSensor(Port.kOnboard, Unit.kInches, RangeProfile.kHighSpeed);
         shootSensor = new Rev2mDistanceSensor(Port.kMXP, Unit.kInches, RangeProfile.kHighSpeed);
-        
+
         feedSensor.setAutomaticMode(true);
         shootSensor.setAutomaticMode(true);
         resetFeedEncoder();
         ballCount = 0;
         ballSeen = true;
-        
-        
+
+        _state = 0;
     }
 
     @Override
     public void periodic(Robot robot) {
         if (robot.getMode() != Mode.DISABLED) {
-            // if (shootSensor.getRange() > Constants.SHOOTER_SENSOR_DEFAULT) {
-                ballUpdate();
-                if (System.currentTimeMillis() < upStopTime && feedSpeed >= 0) {
-                    feed.set(Constants.SHOOTER_FEEDER_DEFAULT_SPEED);
-                } else if(System.currentTimeMillis() < finalStopTime) {
-                    if(shootSensor.getRange() < Constants.SHOOTER_SENSOR_DEFAULT)
-                        feed.set(-Constants.SHOOTER_FEEDER_DEFAULT_SPEED);
-                    else {
-                        feed.set(feedSpeed);
-                        shooting = true;  
-                    } 
-                } 
-                  
-                else if (ballCount <= 3 && feedSpeed >= 0 && System.currentTimeMillis() < ballStopTime) {
-                    feed.set(Constants.SHOOTER_FEEDER_DEFAULT_SPEED);
-                } else if (feedSensor.getRange() < Constants.FEEDER_SENSOR_DEFAULT && feedSpeed >= 0) {
-                   
-                    // stopCount = getFeedEncoderCount() + 28000;
-                } else if (!shooting && ballCount >= 3) {
-                    // prevTime = System.currentTimeMillis();
-                    // if (System.currentTimeMilli  s() > prevTime + Constants.SHOOTER_FEEDER_DELAY * 1000) {
-
-                    // }
-                    if (ballCount == 3 && upStopTime < System.currentTimeMillis()) {
-                        finalStopTime = System.currentTimeMillis() + (Constants.SHOOTER_FEEDER_DOWN_DELAY);
-                        upStopTime = System.currentTimeMillis() + Constants.SHOOTER_FEEDER_UP_DELAY;
-                        // ballCount = 0;
-                    }
-                } 
-                // else if(ballCount == 3 && System.currentTimeMillis() > finalStopTime) {
-                //     if(shootSensor.getRange() > Constants.SHOOTER_SENSOR_DEFAULT) {
-                //         feed.set(Constants.SHOOTER_FEEDER_DEFAULT_SPEED);
-                //     }
-                //     else feed.set(feedSpeed);
-                // }
-                else {
+            ballUpdate();
+            if (System.currentTimeMillis() < upStopTime && feedSpeed >= 0) {
+                feed.set(Constants.SHOOTER_FEEDER_DEFAULT_SPEED);
+                controlMode = ComponentControlMode.AUTO;
+            } else if (System.currentTimeMillis() < finalStopTime) {
+                if (shootSensor.getRange() < Constants.SHOOTER_SENSOR_DEFAULT) {
+                    feed.set(-Constants.SHOOTER_FEEDER_DEFAULT_SPEED);
+                    controlMode = ComponentControlMode.AUTO;
+                } else {
                     feed.set(feedSpeed);
+                    shooting = true;
+                    controlMode = ComponentControlMode.MANUAL;
+
                 }
-                
-            // } else {
-                // feed.set(feedSpeed);
-            // }
+            } else if (ballCount <= 3 && feedSpeed >= 0 && System.currentTimeMillis() < ballStopTime) {
+                feed.set(Constants.SHOOTER_FEEDER_DEFAULT_SPEED);
+                controlMode = ComponentControlMode.AUTO;
+
+            } else if (!shooting && ballCount >= 3) {
+                if (ballCount == 3 && upStopTime < System.currentTimeMillis()) {
+                    finalStopTime = System.currentTimeMillis() + (Constants.SHOOTER_FEEDER_DOWN_DELAY);
+                    upStopTime = System.currentTimeMillis() + Constants.SHOOTER_FEEDER_UP_DELAY;
+                    // ballCount = 0;
+                }
+            } else if (ballCount <= 3 && ballCount > 0) {
+                feed.set(feedSpeed);
+                controlMode = ComponentControlMode.MANUAL;
+
+            } else if (ballCount == 0) {
+                shooting = false;
+            } else {
+                // Something went very wrong.
+                feed.set(feedSpeed);
+                // So set it back to manual.
+                controlMode = ComponentControlMode.MANUAL;
+            }
         }
     }
 
@@ -119,22 +116,29 @@ public class Feeder extends Component<Robot> {
     public void disabled(Robot robot) {
     }
 
-    public void ballUpdate()
-    {
-        // ballToggle.isToggled(feedSensor.getRange() < Constants.FEEDER_SENSOR_DEFAULT);
+    public void ballUpdate() {
+        // ballToggle.isToggled(feedSensor.getRange() <
+        // Constants.FEEDER_SENSOR_DEFAULT);
         // if (ballToggle.getState()) {
-        //     ballCount++;
+        // ballCount++;
         // }
-        if (!ballSeen && feedSensor.getRange() < Constants.FEEDER_SENSOR_DEFAULT)
-        {
+        if (!ballSeen && feedSensor.getRange() < Constants.FEEDER_SENSOR_DEFAULT) {
             ballCount++;
             ballSeen = true;
             ballStopTime = System.currentTimeMillis() + Constants.SHOOTER_FEEDER_BALL_DELAY;
         }
 
-        if (ballSeen && feedSensor.getRange() > Constants.FEEDER_SENSOR_DEFAULT)
-        {
+        if (ballSeen && feedSensor.getRange() > Constants.FEEDER_SENSOR_DEFAULT) {
             ballSeen = false;
+        }
+
+        if (!shootSeen && shooting && shootSensor.getRange() < Constants.SHOOTER_SENSOR_DEFAULT) {
+            ballCount--;
+            shootSeen = true;
+        }
+
+        if (shootSeen && shooting && shootSensor.getRange() > Constants.SHOOTER_SENSOR_DEFAULT) {
+            shootSeen = false;
         }
     }
 
@@ -179,10 +183,10 @@ public class Feeder extends Component<Robot> {
     }
 
     // /**
-    //  * @return the reverse
-    //  */
+    // * @return the reverse
+    // */
     // public Toggle getReverse() {
-    //     return reverse;
+    // return reverse;
     // }
 
     public int getFeedEncoderCount() {

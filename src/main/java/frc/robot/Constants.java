@@ -70,8 +70,9 @@ public final class Constants {
     public static final NeutralMode SHOOTER_FEEDER_NEUTRALMODE = NeutralMode.Brake;
     public static final double SHOOTER_FEEDER_DEFAULT_SPEED = 0.3;
     public static final double SHOOTER_FEEDER_SHOOT_SPEED = 1.0;
-    public static final long SHOOTER_FEEDER_UP_DELAY = 1000;
-    public static final long SHOOTER_FEEDER_DOWN_DELAY = 1500;
+    public static final long SHOOTER_FEEDER_UP_DELAY = 0;
+    public static final long SHOOTER_FEEDER_DOWN_DELAY = 500;
+    public static final long SHOOTER_FEEDER_BALL_DELAY = 2000;
 
     // Intake Related
     public static final int INTAKE_ID = 5;

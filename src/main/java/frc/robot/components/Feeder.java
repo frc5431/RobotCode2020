@@ -26,7 +26,7 @@ public class Feeder extends Component<Robot> {
     int stopCount;
     boolean ballSeen;
 
-    long finalStopTime, upStopTime;
+    long finalStopTime, upStopTime, ballStopTime;
 
     int ballCount = 0;
     boolean shooting = false;
@@ -83,14 +83,14 @@ public class Feeder extends Component<Robot> {
                     } 
                 } 
                   
-                else if (ballCount < 3 && feedSpeed >= 0) {
+                else if (ballCount <= 3 && feedSpeed >= 0 && System.currentTimeMillis() < ballStopTime) {
                     feed.set(Constants.SHOOTER_FEEDER_DEFAULT_SPEED);
                 } else if (feedSensor.getRange() < Constants.FEEDER_SENSOR_DEFAULT && feedSpeed >= 0) {
                    
                     // stopCount = getFeedEncoderCount() + 28000;
                 } else if (!shooting && ballCount >= 3) {
                     // prevTime = System.currentTimeMillis();
-                    // if (System.currentTimeMillis() > prevTime + Constants.SHOOTER_FEEDER_DELAY * 1000) {
+                    // if (System.currentTimeMilli  s() > prevTime + Constants.SHOOTER_FEEDER_DELAY * 1000) {
 
                     // }
                     if (ballCount == 3 && upStopTime < System.currentTimeMillis()) {
@@ -129,6 +129,7 @@ public class Feeder extends Component<Robot> {
         {
             ballCount++;
             ballSeen = true;
+            ballStopTime = System.currentTimeMillis() + Constants.SHOOTER_FEEDER_BALL_DELAY;
         }
 
         if (ballSeen && feedSensor.getRange() > Constants.FEEDER_SENSOR_DEFAULT)

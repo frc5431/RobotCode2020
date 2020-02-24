@@ -61,7 +61,7 @@ public class Dashboard extends Component<Robot> {
     public void periodic(Robot robot) {
         // Setting Data from dashboard
         robot.getFlywheel().setShooterSpeed(getNumber("Shooter Speed", Constants.SHOOTER_FLYWHEEL_DEFAULT_SPEED));
-        robot.getFeeder().setFeedSpeed(getNumber("Feeder Speed", Constants.SHOOTER_FEEDER_DEFAULT_SPEED));
+        robot.getFeeder().setFeedSpeedPreset(getNumber("Feeder Speed", Constants.SHOOTER_FEEDER_DEFAULT_SPEED));
         robot.getHopper().setHopperSpeed(getNumber("Hopper Speed", Constants.HOPPER_DEFAULT_SPEED));
         robot.getDrivebase().setRamping(getNumber("Drivebase Ramping", Constants.DRIVEBASE_DEFAULT_RAMPING));
         robot.getIntake().setIntakeSpeed(getNumber("Intake Speed", Constants.INTAKE_DEFAULT_SPEED));

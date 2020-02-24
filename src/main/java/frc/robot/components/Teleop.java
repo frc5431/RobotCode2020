@@ -128,7 +128,7 @@ public class Teleop extends Component<Robot> {
 
             // Feeder/Indexer controls
             // Doesn't matter the value, just that it's not 0
-            robot.getFeeder().setFeedSpeed((operator.getPOV() == 0 ? 1 : 0) - (operator.getPOV() == 180 ? 1 : 0));
+            robot.getFeeder().setFeedSpeedPreset((operator.getPOV() == 0 ? 1 : 0) - (operator.getPOV() == 180 ? 1 : 0));
 
             // Hopper controls
             robot.getHopper().getHopperToggle().setState(operator.getRawButton(LogitechExtreme3D.Button.THREE));

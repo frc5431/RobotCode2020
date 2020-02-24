@@ -13,7 +13,7 @@ public class Intake extends Component<Robot> {
     private WPI_TalonFX intakeMotor, pivotMotor;
     private Toggle intakeToggle, reverse, pivotToggle;
     private double intakeSpeed = Constants.INTAKE_DEFAULT_SPEED;
-    private double pivotSpeed = Constants.PIVOT_DEFAULT_SPEED;
+    private double pivotSpeed = Constants.PIVOT_UP_SPEED;
 
     private ComponentControlMode controlMode = ComponentControlMode.MANUAL;
 

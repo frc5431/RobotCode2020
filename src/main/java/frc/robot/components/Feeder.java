@@ -206,7 +206,11 @@ public class Feeder extends Component<Robot> {
         return feedToggle;
     }
 
-    public void setFeedSpeed(double feedSpeed) {
+    /**
+     * Sets the feed speed to a preset.
+     * @param feedSpeed The preset to use for the feed speed. 0 is stopped, and any number can be passed. The method will check for the feed state and adjust to a preset accordingly, so only the polarity of the number can be changed.
+     */
+    public void setFeedSpeedPreset(double feedSpeed) {
         if (feedSpeed == 0) {
             this.feedSpeed = 0;
             return;
@@ -217,6 +221,23 @@ public class Feeder extends Component<Robot> {
         double tempSpeed = isReady ? Constants.SHOOTER_FEEDER_SHOOT_SPEED : Constants.SHOOTER_FEEDER_DEFAULT_SPEED;
         
         this.feedSpeed = isNegative ? -tempSpeed : tempSpeed;
+    }
+
+    /**
+     * Sets the feed speed directly. Is used in teleop mode where manual is allowed.
+     * @deprecated
+     * @param feedSpeed The feed speed to use.
+     */
+    public void setFeedSpeedOverride(double feedSpeed) {
+        this.feedSpeed = feedSpeed;
+    }
+
+    /**
+     * Runs the feed. MAY HAVE UNINTENDED RESULTS
+     * @param feedSpeed The speed of the motor to set.
+     */
+    public void runFeed(double feedSpeed) {
+        feed.set(feedSpeed);
     }
 
     public double getFeedSpeed() {

@@ -10,6 +10,7 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Robot.Mode;
 import frc.robot.util.ComponentControlMode;
+import frc.robot.util.states.FeederStateTeleop;
 import frc.team5431.titan.core.misc.Toggle;
 import frc.team5431.titan.core.robot.Component;
 
@@ -32,7 +33,7 @@ public class Feeder extends Component<Robot> {
      */
     long finalStopTime, upStopTime, ballStopTime;
 
-    int _state;
+    FeederStateTeleop _state;
 
     int ballCount = 0;
     boolean shooting = false;
@@ -67,13 +68,15 @@ public class Feeder extends Component<Robot> {
         ballCount = 0;
         ballSeen = true;
 
-        _state = 0;
+        _state = FeederStateTeleop.LOAD;
     }
 
     @Override
     public void periodic(Robot robot) {
         if (robot.getMode() != Mode.DISABLED) {
             ballUpdate();
+
+            /*
             if (System.currentTimeMillis() < upStopTime && feedSpeed >= 0) {
                 feed.set(Constants.SHOOTER_FEEDER_DEFAULT_SPEED);
                 controlMode = ComponentControlMode.AUTO;
@@ -87,11 +90,11 @@ public class Feeder extends Component<Robot> {
                     controlMode = ComponentControlMode.MANUAL;
 
                 }
-            } else if (ballCount <= 3 && feedSpeed >= 0 && System.currentTimeMillis() < ballStopTime) {
+            } else if (ballCount <= 3 && feedSpeed >= 0 && System.currentTimeMillis() < ballStopTime) { // LOADING
                 feed.set(Constants.SHOOTER_FEEDER_DEFAULT_SPEED);
                 controlMode = ComponentControlMode.AUTO;
 
-            } else if (!shooting && ballCount >= 3) {
+            } else if (!shooting && ballCount >= 3) { // Initializes times.
                 if (ballCount == 3 && upStopTime < System.currentTimeMillis()) {
                     finalStopTime = System.currentTimeMillis() + (Constants.SHOOTER_FEEDER_DOWN_DELAY);
                     upStopTime = System.currentTimeMillis() + Constants.SHOOTER_FEEDER_UP_DELAY;
@@ -109,6 +112,64 @@ public class Feeder extends Component<Robot> {
                 // So set it back to manual.
                 controlMode = ComponentControlMode.MANUAL;
             }
+            */
+
+            switch (_state) {
+                case LOAD:
+                    // Run the feeder for a certain amount of time after it detects a ball entering.
+                    if (System.currentTimeMillis() < ballStopTime) { 
+                        if (ballCount < 3) {
+                            feed.set(Constants.SHOOTER_FEEDER_DEFAULT_SPEED);
+                            controlMode = ComponentControlMode.AUTO;
+                        } else {
+                            // Runs if there are three balls.
+                            feed.set(feedSpeed);
+                        }
+                    } else {
+                        // Waits for another ball to load.
+                        feed.set(feedSpeed);
+                        controlMode = ComponentControlMode.MANUAL;
+                    }
+                    // After it loads three balls, it will continue to the next stage.
+                    if (ballCount >= 3) {
+                        _state = FeederStateTeleop.COMPRESS;
+                        upStopTime = System.currentTimeMillis() + Constants.SHOOTER_FEEDER_UP_DELAY;
+                    }
+                    break;
+                case COMPRESS:
+                    // Move on after UP_DELAY ms.
+                    if (System.currentTimeMillis() < upStopTime) {
+                        // Move the feeder up.
+                        feed.set(Constants.SHOOTER_FEEDER_DEFAULT_SPEED);
+                        controlMode = ComponentControlMode.AUTO;
+                    } else {
+                        _state = FeederStateTeleop.AUTO_REVERSE;
+                        finalStopTime = System.currentTimeMillis() + Constants.SHOOTER_FEEDER_DOWN_DELAY;
+                    }
+                    break;
+                case AUTO_REVERSE:
+                    // Move on after DOWN_DELAY ms OR the balls clear the shoot sensor.
+                    if (System.currentTimeMillis() < finalStopTime && shootSensor.getRange() < Constants.SHOOTER_SENSOR_DEFAULT) {
+                        // Reverse the feeder.
+                        feed.set(-Constants.SHOOTER_FEEDER_DEFAULT_SPEED);
+                        controlMode = ComponentControlMode.AUTO;
+                    } else {
+                        _state = FeederStateTeleop.READY;
+                    }
+                    break;
+                case READY:
+                    // Ready to shoot.
+                    // Will not load until all balls have been emptied.
+                    if (ballCount > 0) {
+                        feed.set(feedSpeed);
+                        controlMode = ComponentControlMode.MANUAL;
+                    } else {
+                        _state = FeederStateTeleop.LOAD;
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -117,11 +178,7 @@ public class Feeder extends Component<Robot> {
     }
 
     public void ballUpdate() {
-        // ballToggle.isToggled(feedSensor.getRange() <
-        // Constants.FEEDER_SENSOR_DEFAULT);
-        // if (ballToggle.getState()) {
-        // ballCount++;
-        // }
+        // ballCount incrementer - only increment if you see the ball after not seeing it.
         if (!ballSeen && feedSensor.getRange() < Constants.FEEDER_SENSOR_DEFAULT) {
             ballCount++;
             ballSeen = true;
@@ -132,9 +189,12 @@ public class Feeder extends Component<Robot> {
             ballSeen = false;
         }
 
+        // ballCount decrementer - only decrement if you see the ball after not seeing it.
         if (!shootSeen && shooting && shootSensor.getRange() < Constants.SHOOTER_SENSOR_DEFAULT) {
             ballCount--;
             shootSeen = true;
+            // Quick ballCount fixer - ballCount should never be negative.
+            if (ballCount < 0) ballCount = 0;
         }
 
         if (shootSeen && shooting && shootSensor.getRange() > Constants.SHOOTER_SENSOR_DEFAULT) {
@@ -147,7 +207,16 @@ public class Feeder extends Component<Robot> {
     }
 
     public void setFeedSpeed(double feedSpeed) {
-        this.feedSpeed = feedSpeed;
+        if (feedSpeed == 0) {
+            this.feedSpeed = 0;
+            return;
+        }
+
+        boolean isNegative = Math.abs(feedSpeed) == feedSpeed;
+        boolean isReady = _state == FeederStateTeleop.READY;
+        double tempSpeed = isReady ? Constants.SHOOTER_FEEDER_SHOOT_SPEED : Constants.SHOOTER_FEEDER_DEFAULT_SPEED;
+        
+        this.feedSpeed = isNegative ? -tempSpeed : tempSpeed;
     }
 
     public double getFeedSpeed() {
@@ -199,5 +268,9 @@ public class Feeder extends Component<Robot> {
 
     public int getBallCount() {
         return ballCount;
+    }
+
+    public FeederStateTeleop getState() {
+        return _state;
     }
 }

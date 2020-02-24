@@ -3,6 +3,7 @@ package frc.robot.components;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.util.*;
+import frc.robot.util.states.FeederStateTeleop;
 import frc.team5431.titan.core.robot.Component;
 
 import static edu.wpi.first.wpilibj.smartdashboard.SmartDashboard.putNumber;
@@ -35,6 +36,7 @@ public class Dashboard extends Component<Robot> {
         driveType.setDefaultOption("Tank Drive", DriveTypeSelector.ARCADE);
         driveType.addOption("Arcade Drive", DriveTypeSelector.ARCADE);
         putData("Drive Type", driveType);
+        putString("Feeder State", FeederStateTeleop.LOAD.toString());
         putNumber("Shooter Speed", Constants.SHOOTER_FLYWHEEL_DEFAULT_SPEED);
         putNumber("Shooter RPM", 0.0);
         putNumber("Shooter Guessed Speed", 0.0);
@@ -66,6 +68,7 @@ public class Dashboard extends Component<Robot> {
 
         // Push data to dashboard
         putString("Mode", robot.getMode().toString());
+        putString("Feeder State", robot.getFeeder().getState().toString());
         putNumber("Drivebase Heading", robot.getDrivebase().getHeading());
         putNumber("Elevator Position", robot.getElevator().getRotations());
         putNumber("Shooter RPM", robot.getFlywheel().getEncoderPosition());

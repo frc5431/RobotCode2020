@@ -122,12 +122,13 @@ public class Teleop extends Component<Robot> {
             robot.getFlywheel().getFlywheelToggle().setState(operator.getRawButton(LogitechExtreme3D.Button.TRIGGER));
             
             // Intake controls
-            robot.getIntake().setPivotSpeed((operator.getRawButton(8) ? 0.2 : 0) - (operator.getRawButton(7) ? 0.1 : 0));
+            robot.getIntake().setPivotSpeed((operator.getRawButton(8) ? Constants.PIVOT_DOWN_SPEED : 0) - (operator.getRawButton(7) ? Constants.PIVOT_UP_SPEED : 0));
             robot.getIntake().getIntakeToggle().setState(operator.getRawButton(LogitechExtreme3D.Button.TEN));
             // robot.getIntake().getReverse().setState(operator.getRawButton());
 
             // Feeder/Indexer controls
-            robot.getFeeder().setFeedSpeed((operator.getPOV() == 0 ? Constants.SHOOTER_FEEDER_DEFAULT_SPEED : 0) - (operator.getPOV() == 180 ? Constants.SHOOTER_FEEDER_DEFAULT_SPEED : 0));
+            // Doesn't matter the value, just that it's not 0
+            robot.getFeeder().setFeedSpeed((operator.getPOV() == 0 ? 1 : 0) - (operator.getPOV() == 180 ? 1 : 0));
 
             // Hopper controls
             robot.getHopper().getHopperToggle().setState(operator.getRawButton(LogitechExtreme3D.Button.THREE));

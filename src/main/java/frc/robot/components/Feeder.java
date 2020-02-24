@@ -212,7 +212,7 @@ public class Feeder extends Component<Robot> {
             return;
         }
 
-        boolean isNegative = Math.abs(feedSpeed) == feedSpeed;
+        boolean isNegative = Math.abs(feedSpeed) != feedSpeed;
         boolean isReady = _state == FeederStateTeleop.READY;
         double tempSpeed = isReady ? Constants.SHOOTER_FEEDER_SHOOT_SPEED : Constants.SHOOTER_FEEDER_DEFAULT_SPEED;
         

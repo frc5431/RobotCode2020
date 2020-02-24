@@ -67,13 +67,16 @@ public class Feeder extends Component<Robot> {
         resetFeedEncoder();
         ballCount = 0;
         ballSeen = true;
+        shooting = false;
 
         _state = FeederStateTeleop.LOAD;
     }
 
     @Override
     public void periodic(Robot robot) {
-        if (robot.getMode() != Mode.DISABLED) {
+        if (robot.getMode() == Mode.AUTO) {
+            feed.set(feedSpeed);
+        } else if (robot.getMode() != Mode.DISABLED) {
             ballUpdate();
 
             /*

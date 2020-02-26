@@ -164,6 +164,9 @@ public final class Constants {
 	// ================================================================================
 	// Sensors
 	// ================================================================================
+	public static final int FEEDER_SENSOR_ID = 0;
+	public static final int SHOOTER_SENSOR_ID = 1;
+	
 	public static final double SHOOTER_SENSOR_DEFAULT = 5;
 	public static final double FEEDER_SENSOR_DEFAULT = 6;
 }

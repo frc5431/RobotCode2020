@@ -9,6 +9,8 @@ import frc.team5431.titan.core.robot.Component;
 import static edu.wpi.first.wpilibj.smartdashboard.SmartDashboard.putNumber;
 import static edu.wpi.first.wpilibj.smartdashboard.SmartDashboard.putString;
 
+import java.util.List;
+
 import edu.wpi.first.cameraserver.CameraServer;
 
 import static edu.wpi.first.wpilibj.smartdashboard.SmartDashboard.putData;
@@ -78,15 +80,7 @@ public class Dashboard extends Component<Robot> {
         putNumber("Feed Encoder Position", robot.getFeeder().getFeedEncoderCount());
         putNumber("Ball Count", robot.getFeeder().getBallCount());
 
-        if(robot.getFeeder().getFeedSensor().isRangeValid()) {
-            putNumber("Feeder Sensor Range", robot.getFeeder().getFeedSensor().getRange());
-            putNumber("Feeder Sensor Timestamp", robot.getFeeder().getFeedSensor().getTimestamp());
-        }
-
-        if(robot.getFeeder().getShootSensor().isRangeValid()) {
-            putNumber("Shooter Sensor Range", robot.getFeeder().getShootSensor().getRange());
-            putNumber("Shooter Sensor Timestamp", robot.getFeeder().getShootSensor().getTimestamp());
-        }
+        Sensors.getDioSensors().forEach((sensor) -> putString("DIO Sensor " + sensor.getChannel(), sensor.get() ? "true" : "false"));
     }
 
     @Override

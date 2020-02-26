@@ -6,6 +6,7 @@ import com.revrobotics.Rev2mDistanceSensor.Port;
 import com.revrobotics.Rev2mDistanceSensor.RangeProfile;
 import com.revrobotics.Rev2mDistanceSensor.Unit;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Robot.Mode;
@@ -17,8 +18,8 @@ import frc.team5431.titan.core.robot.Component;
 public class Feeder extends Component<Robot> {
 
     WPI_TalonFX feed;
-    Rev2mDistanceSensor feedSensor;
-    Rev2mDistanceSensor shootSensor;
+    DigitalInput feedSensor;
+    DigitalInput shootSensor;
 
     Toggle feedToggle;
 
@@ -52,18 +53,13 @@ public class Feeder extends Component<Robot> {
 
         // reverse = new Toggle();
         // reverse.setState(false);
-        feedSensor = new Rev2mDistanceSensor(Port.kOnboard, Unit.kInches, RangeProfile.kHighSpeed);
-        shootSensor = new Rev2mDistanceSensor(Port.kMXP, Unit.kInches, RangeProfile.kHighSpeed);
+        feedSensor = Sensors.getDioSensors().get(0);
+        shootSensor = Sensors.getDioSensors().get(3);
     }
 
     @Override
     public void init(Robot robot) {
 
-        feedSensor = new Rev2mDistanceSensor(Port.kOnboard, Unit.kInches, RangeProfile.kHighSpeed);
-        shootSensor = new Rev2mDistanceSensor(Port.kMXP, Unit.kInches, RangeProfile.kHighSpeed);
-
-        feedSensor.setAutomaticMode(true);
-        shootSensor.setAutomaticMode(true);
         resetFeedEncoder();
         ballCount = 0;
         ballSeen = true;
@@ -152,7 +148,7 @@ public class Feeder extends Component<Robot> {
                     break;
                 case AUTO_REVERSE:
                     // Move on after DOWN_DELAY ms OR the balls clear the shoot sensor.
-                    if (System.currentTimeMillis() < finalStopTime && shootSensor.getRange() < Constants.SHOOTER_SENSOR_DEFAULT) {
+                    if (System.currentTimeMillis() < finalStopTime && !shootSensor.get()) {
                         // Reverse the feeder.
                         feed.set(-Constants.SHOOTER_FEEDER_DEFAULT_SPEED);
                         controlMode = ComponentControlMode.AUTO;
@@ -182,25 +178,25 @@ public class Feeder extends Component<Robot> {
 
     public void ballUpdate() {
         // ballCount incrementer - only increment if you see the ball after not seeing it.
-        if (!ballSeen && feedSensor.getRange() < Constants.FEEDER_SENSOR_DEFAULT) {
+        if (!ballSeen && !feedSensor.get()) {
             ballCount++;
             ballSeen = true;
             ballStopTime = System.currentTimeMillis() + Constants.SHOOTER_FEEDER_BALL_DELAY;
         }
 
-        if (ballSeen && feedSensor.getRange() > Constants.FEEDER_SENSOR_DEFAULT) {
+        if (ballSeen && feedSensor.get()) {
             ballSeen = false;
         }
 
         // ballCount decrementer - only decrement if you see the ball after not seeing it.
-        if (!shootSeen && shooting && shootSensor.getRange() < Constants.SHOOTER_SENSOR_DEFAULT) {
+        if (!shootSeen && shooting && !shootSensor.get()) {
             ballCount--;
             shootSeen = true;
             // Quick ballCount fixer - ballCount should never be negative.
             if (ballCount < 0) ballCount = 0;
         }
 
-        if (shootSeen && shooting && shootSensor.getRange() > Constants.SHOOTER_SENSOR_DEFAULT) {
+        if (shootSeen && shooting && shootSensor.get()) {
             shootSeen = false;
         }
     }
@@ -259,20 +255,6 @@ public class Feeder extends Component<Robot> {
      */
     public void setControlMode(ComponentControlMode controlMode) {
         this.controlMode = controlMode;
-    }
-
-    /**
-     * @return the distanceSensor
-     */
-    public Rev2mDistanceSensor getFeedSensor() {
-        return feedSensor;
-    }
-
-    /**
-     * @return the shootSensor
-     */
-    public Rev2mDistanceSensor getShootSensor() {
-        return shootSensor;
     }
 
     // /**

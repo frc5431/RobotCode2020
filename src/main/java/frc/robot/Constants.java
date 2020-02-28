@@ -35,11 +35,11 @@ public final class Constants {
     // ================================================================================
 
     // Drivebase Related
-    public static final int DRIVEBASE_FRONT_LEFT_ID = 3;
-    public static final int DRIVEBASE_BACK_LEFT_ID = 1;
+    public static final int DRIVEBASE_FRONT_LEFT_ID = 1;
+    public static final int DRIVEBASE_BACK_LEFT_ID = 4;
     public static final boolean DRIVEBASE_LEFT_REVERSE = false;
 
-    public static final int DRIVEBASE_FRONT_RIGHT_ID = 4;
+    public static final int DRIVEBASE_FRONT_RIGHT_ID = 3;
     public static final int DRIVEBASE_BACK_RIGHT_ID = 2;
     public static final boolean DRIVEBASE_RIGHT_REVERSE = true;
 
